@@ -1,0 +1,386 @@
+ ////////////////// FOOD COURT MANAGEMENT MYSQL PROJECT //////////////////////
+
+ Project GROUP MEMBERS NAME: Archana Mandhare, Ankeeta Pol
+ 
+ 
+//////////////////////CUSTOMER TABLE ///////////////////////////
+
+CREATE TABLE customer (
+  customer_id int(255) NOT NULL ,
+  first_name varchar(255) NOT NULL,
+  last_name varchar(255) NOT NULL,
+  email_id varchar(255) NOT NULL,
+  password varchar(255) NOT NULL,
+  phone_no varchar(10) NOT NULL,
+  state varchar(255) NOT NULL,
+  city varchar(255) NOT NULL,
+    primary key(customer_id)
+);
+  
+//////////////////INSERT VALUES INTO CUSTOMER///////////////////
+ 
+INSERT INTO customer (customer_id, first_name, last_name, email_id, password, phone_no, state, city) VALUES
+(1, 'Archana', 'Haral', 'mandhare.ap@gmail.com', '12345', '9111111111', 'karnataka', 'mangalore'),
+(2, 'Ankeeta', 'Pol', 'ankeetapol16@gmail.com', '123456', '9764316497', 'karnataka', 'mangalore' ),
+(3, 'Annirudha', 'Kingaonvakar', 'annirudhkingaonvakar@gmail.com', '2345', '9888888856', 'karnataka', 'mangalore'),
+(4, 'Arati', 'Koche', 'kumar45@gmail.com', '12345', '9865326598', 'karnataka', 'Bangalore'),
+(5, 'Anjali', 'Deshmukh', 'bob14@gmail.com', '45698', '9081649731', 'karnataka', 'bangalore'),
+(6, 'Anuja', 'Padwal', 'meril11@gmail.com', '123456', '9632895563', 'karnataka', 'bangalore'),
+(7, 'Ankit', 'Sonawane', 'ankitsonavne12@gmail.com', '123456', '9741628856', 'karnataka', 'mangalore'),
+(8, 'Anup', 'Hingmire', 'mos12@gmail.com', '123', '9741628856', 'karnataka', 'bangalore'),
+(9, 'Aniket', 'Darunde', 'aniketdarunde3@gmail.com', '123', '9101928856', 'karnataka', 'mangalore');
+
+-------------------------------------------------------------------------------------------
+///////////////////////////  MENU TABLE//////////////////////////////////
+
+CREATE TABLE menu (
+  menu_id int(255) NOT NULL,
+  menu_name varchar(255) NOT NULL,
+  customer_id int (255) NOT NULL,
+  price int(20) NOT NULL,
+   primary key (menu_id),
+FOREIGN KEY(customer_id) References customer(customer_id)
+); 
+
+
+///////////////// INSERT VALUES IN MENU///////////////////
+
+INSERT INTO menu (menu_id, customer_id, menu_name, price) VALUES
+(1, 1,'American Pizza', 500),
+(2, 2,'Pineapple Raitha', 350),
+(3, 3,'Chicken Pizza', 1000),
+(4, 4,'Chicken Tikka Masala',1000),
+(5, 5,'Soups and Sauces', 900),
+(6, 6,'Chicken Burger',1100),
+(7, 7,'Chineese Noodles', 300),
+(8, 8,'Sandwich Burger', 180),
+(9, 9,'Veg Biryani', 200);
+--------------------------------------------------------------------------------------
+////////////////// ORDERS TABLE//////////////////////////////////
+
+CREATE TABLE orders (
+  order_id int(255) NOT NULL,
+  customer_id int(255) NOT NULL,
+  menu_id int(255) NOT NULL,
+  quantity int(255) NOT NULL DEFAULT '1',
+   order_status varchar(40) DEFAULT NULL,
+    primary key(order_id),
+FOREIGN KEY(customer_id) References customer(customer_id)
+ ) ;
+
+
+/////////////// INSERT VALUES IN ORDERS TABLE///////////////////////
+
+INSERT INTO orders (order_id, customer_id, menu_id, quantity, order_status) VALUES
+(138, 2, 8, 2, 'ORDER_CONFIRMED'),
+(139, 2, 4, 2, 'PAYMENT_CONFIRMED'),
+(140, 2, 2, 2, 'ORDER_CONFIRMED'),
+(141, 2, 1, 2, 'ORDER_CONFIRMED'),
+(143, 2, 1, 1, 'ORDER_CONFIRMED'),
+(146, 2, 12, 1, 'PAYMENT_CONFIRMED'),
+(147, 2, 11, 1, 'PAYMENT_CONFIRMED'),
+(148, 2, 1, 1, 'ORDER_CONFIRMED'),
+(149, 2, 8, 2, 'PAYMENT_CONFIRMED');
+
+
+---------------------------------------------------------------------------------
+////////////////////////Payment Table////////////////////////
+
+CREATE TABLE payment (
+  id int(255) NOT NULL,
+  order_id int(255) NOT NULL,
+  payment_type varchar(50) NOT NULL DEFAULT 'CASH',  payment_status varchar(50) NOT NULL DEFAULT 'NOT_CONFIRMED',
+   Date date,
+   primary key(id),
+   FOREIGN KEY(order_id) REFERENCES orders(order_id)
+ );
+////////////////////INSERT VALUES INTO PAYMENT////////////////
+
+INSERT INTO payment (id, order_id, payment_type, payment_status, Date) VALUES
+(209, 138, 'CASH', 'CONFIRMED', '2021-06-25'),
+(210, 139, 'GPAY', 'CONFIRMED', '2021-06-25'),
+(212, 140, 'PHONEPAY', 'CONFIRMED', '2021-06-29'),
+(213, 141, 'PHONEPAY', 'CONFIRMED', '2021-06-30'),
+(215, 143, 'PHONEPAY', 'CONFIRMED', '2021-06-28'),
+(216, 146, 'GPAY', 'CONFIRMED', '2021-06-26'),
+(217, 147, 'CASH', 'CONFIRMED', '2021-06-30'),
+(219, 148, 'PHONEPAY', 'CONFIRMED', '2021-06-29'),
+(220, 149, 'CASH', 'CONFIRMED', '2021-06-29');
+
+----------------------------------------------------------------------
+////////////////////// RATINGS/////////////////////////////
+
+CREATE TABLE Ratings (
+  id int (255) NOT NULL,
+  order_id int(255) NOT NULL,
+  customer_id int (255) NOT NULL,
+  menu_name varchar (255) NOT NULL,
+  rate int (255) NOT NULL ,
+  FOREIGN KEY(id) REFERENCES payment(id),
+   FOREIGN KEY(customer_id) REFERENCES customer(customer_id)
+ ) ;
+////////////// INSERT VALUES INTO RATINGS///////////////////////
+
+INSERT INTO Ratings (id, order_id, customer_id, menu_name, rate) VALUES
+(209, 138, 1,  'American Pizza', 10),
+(210, 139, 2, 'Pineapple Raitha', 7),
+(212, 140, 3,  'Chicken Pizza', 8),
+(213, 141, 4, 'Chicken Tikka Masala',9),
+(215, 143, 5, 'Soups and Sauces'  ,8),
+(216, 146, 6,  'Chicken Burger' , 7),
+(217, 147, 7, 'Chineese Noodles' ,10),
+(219, 148, 8, 'Sandwich Burger' ,9),
+(220, 149, 9, 'Veg Biryani'  ,10);
+----------------------------------------------------------------------------
+
+
+//////////////////// COMMANDS  USED IN PROJECT////////////////
+
+select * from customer;
+select * from menu;
+select * from orders;
+select * from payment;
+select * from ratings;
+select max(price) from menu;
+select sum(price) from menu;
+-----------------------------------------------------------
+select * from information_schema.table_constraints;
+-----------------------------------------------------------
+select menu_name,sum(price) from Menu
+where price > 400
+group by menu_name
+having sum(price) > 2000
+order by 1;
+------------------------------------------------------------
+select menu_name , sum(price) from Menu
+group by menu_name
+having sum(price)> 2000;
+select * from customer;
+---------------------------------------------------------
+where first_name like 'A%';
+DROP table customer;
+delete from customer; 
+where city ='mangalore';
+-----------------------------------------------------------
+show indexes from customer;
+
+//////////////////////////////Cursor1 for Addition //////////////////////////////////////////
+delimiter //
+create procedure abc(menu_id int)
+begin
+declare menu_id int(255);
+declare menu_name varchar(255);
+declare customer_id int (255);
+declare price int (255);
+declare finished int default 0;
+declare c1 cursor for select * from menu ;
+declare continue handler for not found set finished =1;
+open c1;
+cursor_c1_loop:loop
+fetch c1 into menu_id,menu_name,customer_id,price;
+if finished =1 then
+leave cursor_c1_loop;
+end if;
+if menu_id = v_menu_id then
+update menu set price = price + 1;
+end if;
+end loop cursor_c1_loop;
+close c1;
+end; //
+delimiter ;
+------------------------------------------------------------------------------
+
+/////////////////////CURSOR JOIN EMAIL ADDRESS  //////////////////////////////
+
+DELIMITER $$
+CREATE PROCEDURE createEmail (
+	INOUT emailList varchar(4000)
+)
+BEGIN
+	DECLARE finished INTEGER DEFAULT 0;
+	DECLARE emailAddress varchar(100) DEFAULT "";
+
+	DEClARE curEmail 
+		CURSOR FOR 
+			SELECT email_id FROM customer;
+
+	DECLARE CONTINUE HANDLER 
+        FOR NOT FOUND SET finished = 1;
+
+	OPEN curEmail;
+
+	getEmail: LOOP
+		FETCH curEmail INTO emailAddress;
+		IF finished = 1 THEN 
+			LEAVE getEmail;
+		END IF;
+		
+		SET emailList = CONCAT(emailAddress,";",emailList);
+	END LOOP getEmail;
+	CLOSE curEmail;
+
+END$$
+DELIMITER ;
+
+SET @emailList = ""; 
+CALL createEmail(@emailList); 
+SELECT @emailList;
+
+///////////Procedure 1 BETWEEN PAYMENT  AND ORDERS////////////////////
+
+
+delimiter /
+create procedure pay_payment(e int)
+begin
+select payment.order_id, order_status, payment_type,payment_status from orders,payment
+where payment.order_id = orders.order_id and payment.order_id = e;
+end;
+/ 
+
+call pay_payment(138);
+/
+
+//////////////// procedure 2 BETWEEN MENU AND CUSTOMER ////////////////////
+
+delimiter /
+create procedure menu3(p int)
+begin
+select city ,state,menu_name,price from customer,menu
+where customer.customer_id = menu.customer_id and customer.customer_id = p;
+end;
+/ 
+
+ call menu3(3);
+/
+////////////////procedure 3 BETWEEN PAYMENT AND RATINGS //////////////////////
+
+
+delimiter /
+create procedure rate1(R int)
+begin
+select payment.order_id,menu_name,payment_type,payment_status from ratings,payment
+where payment.id = ratings.id and payment.id = R;
+end;
+/ 
+
+call rate1(210);
+/
+
+//////////////// procedure 4 BETWEEN CUSTOMER AND RATINGS ///////////////////////
+
+delimiter /
+create procedure sairam(S int)
+begin
+select  first_name,last_name,phone_no ,id, menu_name,rate from customer,ratings
+where customer.customer_id = ratings.customer_id and customer.customer_id= S;
+end;
+/ 
+
+call sairam(9);
+/
+--------------------------------------------------------------------------------
+
+ /////////// Trigger  FOR UPDATE MENU ROW /////////////////////////////////////////
+
+delimiter /
+ CREATE TRIGGER bf_update before update 
+ ON Menu for each row 
+ begin
+ if new.price < 500 then
+    SET new.price = 500;
+end if;
+end;
+/
+delimiter ;
+
+Update Menu
+SET price = 200  Where menu_name = 'Veg Biryani';
+
+select * from Menu;
+
+
+--------------------------------------------------------------------------------------
+////////////////  INNER JOIN FOR CUSTOMER AND ORDERS ///////////////////
+
+select customer.first_name,orders.quantity
+from customer
+INNER JOIN orders 
+ON customer.customer_id=orders.customer_id;
+
+/////////////// LEFT JOIN FOR CUSTOMER AND ORDERS //////////////
+
+select customer.first_name,orders.quantity
+from customer
+LEFT JOIN orders 
+ON customer.customer_id=orders.customer_id
+order by customer.first_name;
+
+///////////// RIGHT JOIN FOR MENU AND ORDERS ////////////
+
+select menu.menu_name,orders.order_id,orders.menu_id
+from menu
+RIGHT JOIN orders 
+ON menu.menu_id=orders.menu_id
+order by orders.quantity;
+
+////////////FULL JOIN FOR CUSTOMER AND ORDERS//////////////
+
+select customer.first_name,orders.quantity
+from customer
+LEFT JOIN orders 
+ON customer.customer_id=orders.customer_id;
+UNION
+select menu.menu_name,orders.order_id,orders.menu_id
+from menu
+RIGHT JOIN orders 
+ON menu.menu_id=orders.menu_id;
+
+
+-----------------------------------------------------
+
+---------------------------------------------------------
+/////////////// Create table trigger PAY_CON////////////////////
+create table pay_con1
+(
+  id int(255) NOT NULL,
+  user_message varchar(500),
+   date  date,
+payment_status varchar(500),
+FOREIGN KEY(id) references payment(id)
+);
+delimiter /
+create trigger con
+after insert
+on payment
+for each row
+begin
+insert into pay_con1(id, user_message,payment_status) 
+value(new.id, concat(new.payment_type,' THANK YOU FOR PAY'),sysdate());
+end;
+/
+INSERT INTO payment (id, order_id, payment_type, payment_status, Date) VALUES
+(221, 138, 'CASH', 'CONFIRMED', '2021-06-25');
+
+select * from payment;
+
+----------------------------------------------------------------------
+//////////trigger for delete////////////////////////////////
+
+delimiter /
+create trigger br_delete before delete 
+on payment for each row
+ begin
+ signal sqlstate '45000' set message_text = 'NOT ALLOWED';
+ End;
+/
+delete from payment 
+where order_id= 138;
+
+ --------------------------------------------------------------------------
+
+
+
+
+
+
+
